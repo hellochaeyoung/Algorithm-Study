@@ -1,26 +1,50 @@
 package boj;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
 
+    static BufferedReader br;
+    static int number;
+
     public static void main(String[] args) throws IOException {
 
-        String[] arr = {"c=","c-", "dz=", "d-", "lj", "nj", "s=", "z="};
+        br = new BufferedReader(new InputStreamReader(System.in));
+        number = Integer.parseInt(br.readLine());
 
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String str;
-
-        str = br.readLine();
-
-        for(String s : arr) {
-            if(str.contains(s)) {
-                str = str.replaceAll(s, " ");
-
+        int count = 0;
+        for(int i=0;i<number;i++) {
+            if(check()) {
+                count++;
             }
         }
 
-        System.out.println(str.length());
+        System.out.println(count);
+
+    }
+
+    public static boolean check() throws IOException {
+
+        boolean[] check = new boolean[26];
+        String st = br.readLine();
+
+        char prev = ' ';
+        for(char c : st.toCharArray()) {
+            if(check[c - 'a']){
+                if(prev == c) {
+                    continue;
+                }else {
+                    return false;
+                }
+
+            }else {
+                check[c - 'a'] = true;
+                prev = c;
+            }
+        }
+
+        return true;
     }
 }
