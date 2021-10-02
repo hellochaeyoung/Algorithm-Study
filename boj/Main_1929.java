@@ -41,10 +41,13 @@ public class Main_1929 {
 
     public static void printPrime(int start, int end) {
 
+        StringBuilder sb = new StringBuilder();
         for(int i = start; i < end + 1; i++) {
             if(!isNotPrime[i]) {
-                System.out.println(i);
+                sb.append(i + "\n");
+                //System.out.println(i);
             }
         }
+        System.out.println(sb.toString());
     }
 }
