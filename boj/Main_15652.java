@@ -32,10 +32,8 @@ public class Main_15652 {
         if(depth == M) {
             for(int n : arr) {
                 sb.append(n + " ");
-                //System.out.print(n + " ");
             }
             sb.append("\n");
-            //System.out.println();
             return;
         }
 
