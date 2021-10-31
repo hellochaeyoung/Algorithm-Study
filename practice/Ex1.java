@@ -22,7 +22,9 @@ public class Ex1 {
 
         for(int i=0;i<id_list.length;i++) {
             String[] arr = id_list[i].split("\\s");
-            HashSet<String> set = new HashSet<>(Arrays.asList(arr));
+
+            // 중복값 없애기 위해서 Array -> Set -> Array로 변환하는 과정 거침침
+           HashSet<String> set = new HashSet<>(Arrays.asList(arr));
             String[] result = set.toArray(new String[0]);
 
             for(int j=0;j<result.length;j++) {
