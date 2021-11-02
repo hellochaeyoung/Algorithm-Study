@@ -13,32 +13,29 @@ public class Ex2 {
     //       2. 학생번호 마다 제출한 문제와 점수가 5문제 이상일 경우에만 해시맵에 학생번호를 저장
     //       3. 동일한 키(제출한 문제 종류와 점수들)에 저장된 학생들 2명 이상일 경우 리스트에 저장하여 오름차순으로 출력
     // => 이보다 더 간단한 로직이 있을 거 같은데 생각이 안남...,, 문제와 점수가 다 동일해야하기 때문에 합계라던지 다른 방법으로 비교할 수가 없음, 정렬하여 다 이어붙인 문자열 값으로 비교하는 방법으로 풀이..
+
+
+    // TreeMap은 자동으로 key 값 기준으로 정렬해준다!!
+    // HashMap은 put할 때 해시값을 이용하기 때문에 순서 유지가 안된다. 따라서 따로 정렬해주는 기능 구현이 필요하다.
+    // 추가하는 순서를 유지하고 싶다면 LinkedHashMap을 사용하는 것이 좋다.
+    static TreeMap<String, String> treeMap = new TreeMap<>();
+    static Map<String, String> map = new HashMap<>();
+
     public static void main(String[] args ) {
 
         String[] logs = {"0001 3 95", "0001 5 90", "0001 5 100", "0002 3 95", "0001 7 80", "0001 8 80", "0001 10 90", "0002 10 90", "0002 7 80", "0002 8 80", "0002 5 100", "0003 99 90"};
         //String[] logs = {"0001 5 60", "0001 9 90", "0002 1 20", "0003 5 60"};
 
-        String[] answer = solution(logs);
+        sortLogs(logs); // 채점 로그 정렬 함수
 
-        if (answer.length == 0) {
-            System.out.println("None");
-            return;
-        }
+        solvedQuestionAndScoreOfStudents(); // 학생별 제출문제,점수 저장함수
 
-        for(int i=0;i<answer.length;i++) {
-            System.out.print(answer[i] + " ");
-        }
+        String[] answer = findStudentOfCheating(); // 부정행위자 찾는 함수
+
+        print(answer); // 결과 출력함수
     }
 
-    public static String[] solution(String[] logs) {
-        String[] answer = {};
-
-        Map<String, String> treeMap = new TreeMap<>();
-        // TreeMap은 자동으로 key 값 기준으로 정렬해준다!!
-        // HashMap은 put할 때 해시값을 이용하기 때문에 순서 유지가 안된다. 따라서 따로 정렬해주는 기능 구현이 필요하다.
-        // 추가하는 순서를 유지하고 싶다면 LinkedHashMap을 사용하는 것이 좋다.
-
-
+    static void sortLogs(String[] logs) {
         // key : 학생번호-문제번호, value : 점수로 저장 - key값 기준으로 오름차순 정렬로!
         for(int i=0;i<logs.length;i++) {
 
@@ -48,8 +45,9 @@ public class Ex2 {
 
             treeMap.put(key, arr[2]);
         }
+    }
 
-        Map<String, String> map = new HashMap<>();
+    static void solvedQuestionAndScoreOfStudents() {
 
         String totalKey = ""; // 제출한 문제 번호 종류를 저장하는 변수
         String totalValue = ""; // 제출한 문제의 점수를 저장하는 변수
@@ -79,8 +77,11 @@ public class Ex2 {
 
             pre = key.split("-")[0];
 
-
         }
+    }
+
+    static String[] findStudentOfCheating() {
+        String[] answer;
 
         ArrayList<String> list = new ArrayList<>();
 
@@ -102,4 +103,16 @@ public class Ex2 {
 
         return answer;
     }
+
+    static void print(String[] answer) {
+        if (answer.length == 0) {
+            System.out.println("None");
+            return;
+        }
+
+        for(int i=0;i<answer.length;i++) {
+            System.out.print(answer[i] + " ");
+        }
+    }
+
 }
