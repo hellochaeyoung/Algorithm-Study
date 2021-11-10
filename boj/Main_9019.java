@@ -5,69 +5,60 @@ import java.io.*;
 
 public class Main_9019 {
 
-    static ArrayList<String> list = new ArrayList<>();
-    static String[] arr = {"D", "S", "L", "R"};
-
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
 
+        // 깊이의 제한이 없을 땐 bfs로 탐색하는 것이 좋다.
         for(int i=0;i<T;i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             int A = Integer.parseInt(st.nextToken());
             int B = Integer.parseInt(st.nextToken());
 
+            String[] answer = new String[10000];
+            boolean[] visited = new boolean[10000];
+            Queue<Integer> q = new LinkedList<>();
 
-        }
-    }
+            visited[A] = true;
+            q.add(A);
+            Arrays.fill(answer, "");
 
-    static void find(int a, int b) {
+            while(!q.isEmpty() && !visited[B]) {
+                int now = q.poll();
+                int D = (2*now) % 10000;
+                int S = (now == 0) ? 9999 : now - 1;
+                int L = (now % 1000) * 10 + now/1000;
+                int R = (now % 10) * 1000 + now/10;
 
-        while(true) {
+                if(!visited[D]) {
+                    q.add(D);
+                    visited[D] = true;
+                    answer[D] = answer[now] + "D";
+                }
 
-            // 한 명령어를 계속 이어서 할 것인지
-            // 명령어를 한 번 씩 돌아가면서 탐색할 것인지
-            for(String s : arr) {
-                int result = calc(s, a);
+                if(!visited[S]) {
+                    q.add(S);
+                    visited[S] = true;
+                    answer[S] = answer[now] + "S";
+                }
 
-                if(result == b) {
-                    list.add(s);
-                    break;
+                if(!visited[L]) {
+                    q.add(L);
+                    visited[L] = true;
+                    answer[L] = answer[now] + "L";
+                }
+
+                if(!visited[R]) {
+                    q.add(R);
+                    visited[R] = true;
+                    answer[R] = answer[now] + "R";
                 }
             }
-        }
 
+            System.out.println(answer[B]);
+        }
     }
 
-    static int calc(String s, int n) {
 
-        int result = 0;
-        String str = String.valueOf(n);
-        switch (s) {
-            case "D" :
-                result = n*n;
-                if(result > 9999) {
-                    result = result % 1000;
-                }
-                break;
-            case "S" :
-                result = n-1;
-                if(result == 0) {
-                    result = 9999;
-                }
-                break;
-            case "L" :
-                String first = str.substring(0,1);
-                result = Integer.parseInt(str.substring(1) + first);
-                break;
-            case "R" :
-                String last = str.substring(str.length()-1);
-                result = Integer.parseInt(last + str.substring(0, str.length()-1));
-                break;
-
-        }
-
-        return result;
-    }
 }
