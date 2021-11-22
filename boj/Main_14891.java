@@ -38,7 +38,14 @@ public class Main_14891 {
             StringTokenizer st = new StringTokenizer(br.readLine());
             int rotationOfWheel = Integer.parseInt(st.nextToken()); // 회전할 바퀴
             int direction = Integer.parseInt(st.nextToken()); // 회전할 바퀴의 회전 방향
+
+            check(rotationOfWheel, direction);
+
+            rotate();
         }
+
+        System.out.println(getScore());
+
     }
 
     static void check(int numberOfWheel, int direction) {
@@ -90,13 +97,36 @@ public class Main_14891 {
     static void rotate() {
 
         for(int i=0;i<list.size();i++) {
+            int size = list.get(i).size()-1;
             if(rotation[i] == 1) { // 시계 뱡항
-                
+                //char last = list.get(i).get(size);
+                char last = list.get(i).remove(size);
+                list.get(i).add(0, last);
             }else if(rotation[i] == -1) { // 반시계 방향
-
+                //char first = list.get(i).get(0);
+                char first = list.get(i).remove(0);
+                list.get(i).add(first);
             }else { // 회전 안함
-
+                continue;
             }
         }
+    }
+
+    static int getScore() {
+        int score = 0;
+
+        for(int i=0;i<list.size();i++) {
+            char ch = list.get(i).get(0);
+            if(i == 0 && ch == '1') {
+                score += 1;
+            }else if(i == 1 && ch == '1') {
+                score += 2;
+            }else if(i == 2 && ch == '1') {
+                score += 4;
+            }else if(i == 3 && ch == '1') {
+                score += 8;
+            }
+        }
+        return score;
     }
 }
