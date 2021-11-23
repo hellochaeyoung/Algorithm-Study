@@ -8,14 +8,9 @@ public class Main_14891 {
     static final int count = 4;
     static final int state = 8;
 
-    static ArrayList<Integer> first = new ArrayList<>();
-    static ArrayList<Integer> second = new ArrayList<>();
-    static ArrayList<Integer> third = new ArrayList<>();
-
-    static ArrayList<Character> stateList = new ArrayList<>();
+    static ArrayList<Character> stateList;
     static ArrayList<ArrayList<Character>> list = new ArrayList<>();
 
-    static boolean[] impossible;
     static int[] rotation;
 
     public static void main(String[] args) throws IOException {
@@ -23,6 +18,7 @@ public class Main_14891 {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         for(int i=0;i<count;i++) {
+            stateList = new ArrayList<>(); // 매번 새로 생성해줘야 초기화됨, 이것 생각못하고 그대로 add해서 잘못 입력 들어감.
             String str = br.readLine();
             for(int j=0;j<state;j++) {
                 stateList.add(str.charAt(j));
@@ -30,8 +26,6 @@ public class Main_14891 {
             list.add(stateList);
         }
 
-        impossible = new boolean[list.size()];
-        rotation = new int[list.size()];
         int K = Integer.parseInt(br.readLine());
 
         for(int i=0;i<K;i++) {
@@ -39,7 +33,9 @@ public class Main_14891 {
             int rotationOfWheel = Integer.parseInt(st.nextToken()); // 회전할 바퀴
             int direction = Integer.parseInt(st.nextToken()); // 회전할 바퀴의 회전 방향
 
-            check(rotationOfWheel, direction);
+            rotation = new int[count]; // 회천 바퀴와 방향에 따라서 모든 바퀴들의 회전 방향과 여부가 정해지므로 매번 새로 생성하여 초기화
+
+            check(rotationOfWheel-1, direction);
 
             rotate();
         }
@@ -48,47 +44,23 @@ public class Main_14891 {
 
     }
 
+    //재귀호출로 해결하는 방법 생각해내지 못함!!!!
     static void check(int numberOfWheel, int direction) {
 
-        // 기준 바퀴의 위치가 홀수냐 짝수냐, 시계/반시계방향이냐에 따라서 달라짐
-        boolean even;
-        if(numberOfWheel % 2 == 0) {
-            even = true;
-        }else {
-            even = false;
+        rotation[numberOfWheel] = direction;
+
+        int prev = numberOfWheel - 1;
+        int next = numberOfWheel + 1;
+
+        if(prev >= 0 && rotation[prev] == 0) {
+            if(list.get(prev).get(2) != list.get(numberOfWheel).get(6)) {
+                check(prev, direction * -1); //
+            }
         }
 
-        for(int i=0;i<list.size()-1;i++) {
-
-            if(i % 2 == 0) { // 위치가 짝수면
-                if(even) { // 기준 바퀴의 위치가 짝수면
-                    rotation[i] = direction; // 짝수 인덱스는 다 동일 direction
-                }else { // 기준 바퀴의 위치가 홀수면
-                    if(direction > 0) {
-                        rotation[i] = direction - 2;
-                    }else {
-                        rotation[i] = direction + 2;
-                    }
-                }
-            }else { // 위치가 홀수면
-                if(even) {
-                    if(direction > 0) {
-                        rotation[i] = direction - 2;
-                    }else {
-                        rotation[i] = direction + 2;
-                    }
-                }else {
-                    rotation[i] = direction;
-                }
-            }
-            int right = list.get(i).get(2);
-            int left = list.get(i+1).get(6);
-
-            if(right == left) { // 다음 바퀴의 톱니의 극과 같으면
-                impossible[i] = true; // 회전이 불가능한 바퀴
-                // 회전할 바퀴 위치와 회전 방향에 따라서 나머지 바퀴들의 회전 방향이 결정됨
-
-                rotation[i] = 0; // 회전하지 않을 바퀴
+        if(next <= 3 && rotation[next] == 0) {
+            if(list.get(next).get(6) != list.get(numberOfWheel).get(2)) {
+                check(next, direction * -1); //
             }
         }
 
@@ -96,14 +68,12 @@ public class Main_14891 {
 
     static void rotate() {
 
-        for(int i=0;i<list.size();i++) {
-            int size = list.get(i).size()-1;
+        for(int i=0;i<count;i++) {
+            int size = state-1;
             if(rotation[i] == 1) { // 시계 뱡항
-                //char last = list.get(i).get(size);
                 char last = list.get(i).remove(size);
                 list.get(i).add(0, last);
             }else if(rotation[i] == -1) { // 반시계 방향
-                //char first = list.get(i).get(0);
                 char first = list.get(i).remove(0);
                 list.get(i).add(first);
             }else { // 회전 안함
