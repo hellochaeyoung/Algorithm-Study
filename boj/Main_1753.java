@@ -3,15 +3,27 @@ package boj;
 import java.util.*;
 import java.io.*;
 
+class Node implements Comparable<Node> {
+    int end, weight;
+
+    public Node(int end, int weight) {
+        this.end = end;
+        this.weight = weight;
+    }
+
+    @Override
+    public int compareTo(Node o) {
+        return weight - o.weight;
+    }
+}
+
 public class Main_1753 {
 
-    static int V;
-    static int E;
-    static boolean[] visited;
-    static int[][] weight;
-    static int min = Integer.MAX_VALUE;
+
+    static int V,E,K;
+    static List<Node>[] list;
     static int INF = 10000000;
-    static int d[];
+    static int dist[];
 
     public static void main(String[] args) throws IOException {
 
@@ -20,21 +32,15 @@ public class Main_1753 {
 
         V = Integer.parseInt(st.nextToken()); // 노드의 수
         E = Integer.parseInt(st.nextToken()); // 간선의 수
-        int K = Integer.parseInt(br.readLine());
+        K = Integer.parseInt(br.readLine());
 
-        visited = new boolean[V+1];
-        weight = new int[V+1][E+1];
-        d = new int[V+1];
+        list = new ArrayList[V+1];
+        dist = new int[V+1];
 
-        //초기화
+        Arrays.fill(dist, INF);
+
         for(int i=1;i<=V;i++) {
-            for(int j=1;j<=E;j++) {
-                if(i==j) {
-                    weight[i][j] = 0;
-                }else {
-                    weight[i][j] = INF;
-                }
-            }
+            list[i] = new ArrayList<>();
         }
 
         for(int i=0;i<E;i++) {
@@ -43,62 +49,49 @@ public class Main_1753 {
             int v = Integer.parseInt(st.nextToken());
             int w = Integer.parseInt(st.nextToken());
 
-            weight[u][v] = w;
-            weight[v][u] = w;
+            list[u].add(new Node(v, w));
         }
 
         dijkstra(K);
-        for(int i=1;i<=d.length;i++) {
-            System.out.println(d[i]);
-        }
-        /*
-        for(int i=1;i<=V;i++) {
-            for(int j=1;j<=E;j++) {
-                System.out.print(node[i][j] + " ");
-            }
-            System.out.println();
-        }
 
-        System.out.println();
+        StringBuilder sb = new StringBuilder();
 
         for(int i=1;i<=V;i++) {
-            for(int j=1;j<=E;j++) {
-                System.out.print(weight[i][j] + " ");
+            if(dist[i] == INF){
+                sb.append("INF\n");
+            }else {
+                sb.append(dist[i] + "\n");
             }
-            System.out.println();
         }
-         */
+
+        System.out.println(sb);
 
     }
 
     static void dijkstra(int k) {
 
-        for(int i=1;i<=V;i++) {
-            d[i] = weight[k][i];
-        }
-        visited[k] = true;
-        for(int i=0;i<V-2;i++) {
-            int cur = getSmallIndex(k);
-            visited[cur] = true;
-            for(int j=1;j<=V;j++) {
-                if(!visited[j]){
-                    if(d[cur] + weight[k][j] < d[j]) {
-                        d[j] = d[cur] + weight[k][j];
-                    }
+        PriorityQueue<Node> q = new PriorityQueue<>();
+        boolean[] check = new boolean[V+1];
+        q.add(new Node(k, 0));
+        dist[k] = 0;
+
+        while(!q.isEmpty()) {
+            Node curNode = q.poll();
+            int cur = curNode.end;
+
+            if(check[cur]) {
+                continue;
+            }
+            check[cur] = true;
+
+            for(Node node : list[cur]) {
+                if(dist[node.end] > dist[cur] + node.weight) {
+                    dist[node.end] = dist[cur] + node.weight;
+                    q.add(new Node(node.end, dist[node.end]));
                 }
             }
         }
+
     }
 
-    static int getSmallIndex(int start) {
-        int min = INF;
-        int index = 0;
-        for(int i=1;i<=V;i++) {
-            if(weight[start][i] < min && !visited[i]) {
-                index = i;
-            }
-        }
-
-        return index;
-    }
 }
