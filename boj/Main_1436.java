@@ -12,39 +12,25 @@ public class Main_1436 {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
 
-        ArrayList<String> list = new ArrayList<>();
+        int n = 666;
+        int count = 0;
+        while(true) {
 
-        int n = 1;
-        int i = 1000;
-        while(n <= 10000) {
+            String s = Integer.toString(n);
 
-
-
-            if(i % 100 == 66) {
-                for(int j=0;j<=99;j++) {
-                    list.add(i + "6" + j);
-                    n++;
-                }
+            if(s.contains("666")) {
+                count++;
             }
-            if(i % 10 == 6) {
-                for(int j=0;j<=9;j++) {
-                    list.add(i + "66" + j);
-                    n++;
-                }
-            }else {
-                list.add(i + "666");
-                n++;
+
+            if(count == N) {
+                break;
             }
-            i++;
+
+            n++;
+
         }
 
-        int z = 1;
-        for(String s : list) {
-            System.out.println(s + " " + z);
-            z++;
-        }
-
-        System.out.println(list.get(N-1));
+        System.out.println(n);
 
     }
 }
