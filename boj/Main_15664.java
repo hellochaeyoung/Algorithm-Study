@@ -4,7 +4,7 @@ import java.util.*;
 import java.io.*;
 
 public class Main_15664 {
-
+    
     static int N, M;
     static boolean[] visited;
     static int[] arr;
