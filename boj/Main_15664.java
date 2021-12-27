@@ -4,7 +4,7 @@ import java.util.*;
 import java.io.*;
 
 public class Main_15664 {
-    
+
     static int N, M;
     static boolean[] visited;
     static int[] arr;
@@ -32,7 +32,7 @@ public class Main_15664 {
         for(int i=0;i<N;i++) {
             dfs(i,0);
         }
-
+        
         for(String s : set) {
             System.out.println(s);
         }
