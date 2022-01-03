@@ -10,6 +10,9 @@ public class Main_9372 {
     static ArrayList<Integer> answer = new ArrayList<>();
     static boolean[] visited;
 
+    static int[] parent;
+    static int edge = 0;
+
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -23,8 +26,11 @@ public class Main_9372 {
             list = new ArrayList[N+1];
             visited = new boolean[N+1];
 
+            parent = new int[N+1];
+
             for(int n=1;n<=N;n++) {
                 list[n] = new ArrayList<>();
+                parent[n] = n;
             }
 
             for(int j=0;j<M;j++) {
@@ -34,9 +40,15 @@ public class Main_9372 {
 
                 list[start].add(end);
                 list[end].add(start);
+
+                // kruskal
+                kruskal(start, end);
             }
 
             find();
+
+            System.out.println(edge);
+            edge = 0;
         }
 
         StringBuilder sb = new StringBuilder();
@@ -69,6 +81,52 @@ public class Main_9372 {
                 }
             }
 
+        }
+    }
+
+    static void kruskal(int u, int v) {
+
+        for(int i=0;i<N;i++) {
+
+            if(!isSameParent(u,v)) {
+                edge++;
+
+                union(u,v);
+            }
+        }
+
+    }
+
+    static boolean isSameParent(int x, int y) {
+        x = findParent(x);
+        y = findParent(y);
+
+        if(x == y) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    static int findParent(int x) {
+
+        if(x == parent[x]) {
+            return x;
+        }else {
+            return parent[x] = findParent(parent[x]);
+        }
+    }
+
+    static void union(int x, int y) {
+        x = findParent(x);
+        y = findParent(y);
+
+        if(x != y) {
+            if(x < y) {
+                parent[y] = x;
+            }else {
+                parent[x] = y;
+            }
         }
     }
 }
