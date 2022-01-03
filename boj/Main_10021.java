@@ -3,13 +3,28 @@ package boj;
 import java.io.*;
 import java.util.*;
 
+
 public class Main_10021 {
 
+    static class Node {
+
+        int start, end, weight;
+
+        public Node(int start, int end, int weight) {
+            this.start = start;
+            this.end = end;
+            this.weight = weight;
+        }
+    }
     static int N,C;
     static int[][] arr;
+    static int[] parent;
+
+    static ArrayList<Node>[] graph;
     static boolean[] visited;
-    static ArrayList<int[]>[] graph;
-    static int[] dist;
+    static int[] minWeight;
+
+    static PriorityQueue<Node> queue = new PriorityQueue<>((o1, o2) -> (int)(o1.weight - o2.weight));
 
     public static void main(String[] args) throws IOException {
 
@@ -20,11 +35,14 @@ public class Main_10021 {
         C = Integer.parseInt(st.nextToken());
 
         arr = new int[N][2];
+        parent = new int[N];
+
         graph = new ArrayList[N];
         visited = new boolean[N];
-        dist = new int[N];
+        minWeight = new int[N];
 
         for(int i=0;i<N;i++) {
+            parent[i] = i;
             graph[i] = new ArrayList<>();
         }
 
@@ -37,12 +55,14 @@ public class Main_10021 {
             arr[i][1] = y;
         }
 
-        makeGraph();
+        getDistance();
+
+        System.out.println(kruskal());
 
         System.out.println(prim());
     }
 
-    static void makeGraph() {
+    static void getDistance() {
 
         for(int i=0;i<N-1;i++) {
             for(int j=i+1;j<N;j++) {
@@ -52,38 +72,35 @@ public class Main_10021 {
                 int distance = (int)(xDistance + yDistance);
 
                 if(distance >= C) {
-                    graph[i].add(new int[] {j, distance});
-                    graph[j].add(new int[] {i, distance});
+                    queue.add(new Node(i, j, distance));
+
+                    graph[i].add(new Node(i,j,distance));
+                    graph[j].add(new Node(j,i,distance));
                 }
             }
         }
     }
 
-    static int prim() {
-        PriorityQueue<Integer> queue = new PriorityQueue<>();
-        Arrays.fill(dist, Integer.MAX_VALUE);
+    static int kruskal() {
 
         int weight = 0;
         int cnt = 0;
-        queue.add(0);
-        dist[0] = 0;
-        while(!queue.isEmpty()) {
-            int node = queue.poll();
 
-            if(!visited[node]) {
-                visited[node] = true;
+        while(!queue.isEmpty()) {
+            Node node = queue.poll();
+
+            int x = node.start;
+            int y = node.end;
+
+            if(!isSameParent(x,y)) {
+                weight += node.weight;
                 cnt++;
-                for(int[] arr : graph[node]) {
-                    if(dist[arr[0]] >= dist[node] + arr[1]) {
-                        dist[arr[0]] = dist[node] + arr[1];
-                        weight += dist[arr[0]];
-                        queue.add(arr[0]);
-                    }
-                }
+                union(x,y);
             }
+
         }
 
-        if(cnt < N-1) {
+        if(cnt != N-1) {
             return -1;
         }
 
@@ -91,5 +108,72 @@ public class Main_10021 {
 
     }
 
+    static int prim() {
 
+        Arrays.fill(minWeight, Integer.MAX_VALUE);
+
+        int cnt = 0;
+        int sum = 0;
+        minWeight[0] = 0;
+
+        for(int i=0;i<N;i++) {
+            int u = -1;
+            for(int j=0;j<N;j++) {
+                if(!visited[j] && ((u == -1) || minWeight[u] > minWeight[j])) {
+                    u = j;
+                }
+            }
+            sum += minWeight[u];
+            visited[u] = true;
+
+            for(int z=0;z<graph[u].size();z++) {
+                int end = graph[u].get(z).end;
+                int weight = graph[u].get(z).weight;
+                if(!visited[end] && minWeight[end] > weight) {
+                    minWeight[end] = weight;
+                }
+            }
+        }
+
+        for(int n : minWeight) {
+            if(n == Integer.MAX_VALUE) {
+                return -1;
+            }
+        }
+
+        return sum;
+    }
+
+    static int find(int x) {
+        if(x == parent[x]) {
+            return x;
+        }else {
+            return parent[x] = find(parent[x]);
+        }
+    }
+
+    static void union(int x, int y) {
+        x = find(x);
+        y = find(y);
+
+        if(x != y) {
+
+            if(x < y) {
+                parent[y] = x;
+            }else {
+                parent[x] = y;
+            }
+        }
+    }
+
+    static boolean isSameParent(int x, int y) {
+        x = find(x);
+        y = find(y);
+
+        if(x == y) {
+            return true;
+        }else {
+            return false;
+        }
+    }
 }
