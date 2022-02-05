@@ -10,6 +10,9 @@ public class Main_11559 {
     static ArrayList<Character>[] arrList;
     static int cnt = 0;
     static boolean[][] visited;
+    static boolean[][] removed;
+    static int[] dx = {-1,0,1,0};
+    static int[] dy = {0,1,0,-1};
 
     public static void main(String[] args) throws IOException {
 
@@ -18,6 +21,7 @@ public class Main_11559 {
         arr = new char[N][M];
         arrList = new ArrayList[M];
         visited = new boolean[M][N];
+        removed = new boolean[M][N];
 
         for(int i=0;i<N;i++) {
             String str = br.readLine();
@@ -35,17 +39,26 @@ public class Main_11559 {
 
         int count = 0;
 
-        for(int i=0;i<M;i++) {
-            for(int j=0;j<N;j++) {
-                dfs(i, j, arrList[i].get(j));
+        while(true) {
+            visited = new boolean[M][N];
+            for(int i=0;i<M;i++) {
+                for(int j=0;j<N;j++) {
+                    if(arrList[i].get(j) != '.' && !visited[i][j]) {
+                        cnt = 1;
+                        dfs(i, j, arrList[i].get(j));
 
-                if(cnt >= 4) {
-                    count++;
+                    }
+
                 }
+            }
 
-                cnt = 0;
+            if(remove()) {
+                count++;
+            }else {
+                break;
             }
         }
+
 
         System.out.println(count);
 
@@ -54,29 +67,56 @@ public class Main_11559 {
 
     static void dfs(int x, int y, char ch) {
 
-        if(x < 0 || x >= M || y < 0 || y >= N || visited[x][y]) {
-            return;
-        }
-
-
-        if(arrList[x].get(y) == '.' || arrList[x].get(y) != ch) {
-            return;
-        }
-
         visited[x][y] = true;
-        cnt++;
-        dfs(x+1, y, ch);
-        dfs(x-1, y, ch);
-        dfs(x, y+1, ch);
-        dfs(x, y-1, ch);
 
-        if(cnt >= 4) {
-            arrList[x].remove(y);
-            arrList[x].add('.');
+        for(int i=0;i<4;i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+
+            if(nx < 0 || nx >= M || ny < 0 || ny >= N || arrList[nx].get(ny) != ch) {
+                continue;
+            }
+
+            if(!visited[nx][ny] && arrList[nx].get(ny) == ch) {
+                cnt++;
+                dfs(nx, ny, ch);
+            }
         }
 
-        visited[x][y] = false;
+        System.out.println(x + " " + y + " " + ch + " " + cnt);
+        if(cnt >= 4) {
+            //return true;
+            arrList[x].set(y, '*');
+        }
 
+
+    }
+
+    static boolean remove() {
+
+        boolean modified = false;
+
+        for(int i=0;i<M;i++) {
+            arrList[i].removeIf(ch -> ch.equals('*'));
+            if(arrList[i].size() != N) {
+                modified = true;
+                int size = N - arrList[i].size();
+                for(int j=0;j<size;j++) {
+                    arrList[i].add('.');
+                }
+            }
+        }
+
+        for(int i=0;i<M;i++) {
+            for(int j=0;j<N;j++) {
+                System.out.print(arrList[i].get(j));
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+
+        return modified;
     }
 
 }
