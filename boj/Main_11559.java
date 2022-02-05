@@ -3,14 +3,21 @@ package boj;
 import java.io.*;
 import java.util.*;
 
+class Puyo {
+    int x, y;
+
+    public Puyo(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
 public class Main_11559 {
 
     static final int N = 12, M = 6;
     static char[][] arr;
-    static ArrayList<Character>[] arrList;
-    static int cnt = 0;
     static boolean[][] visited;
-    static boolean[][] removed;
+
+    static List<Puyo> list = new ArrayList<>();
     static int[] dx = {-1,0,1,0};
     static int[] dy = {0,1,0,-1};
 
@@ -19,9 +26,6 @@ public class Main_11559 {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         arr = new char[N][M];
-        arrList = new ArrayList[M];
-        visited = new boolean[M][N];
-        removed = new boolean[M][N];
 
         for(int i=0;i<N;i++) {
             String str = br.readLine();
@@ -30,29 +34,31 @@ public class Main_11559 {
             }
         }
 
-        for(int i=0;i<M;i++) {
-            arrList[i] = new ArrayList<>();
-            for(int j=N-1;j>=0;j--) {
-                arrList[i].add(arr[j][i]);
-            }
-        }
-
         int count = 0;
 
         while(true) {
-            visited = new boolean[M][N];
-            for(int i=0;i<M;i++) {
-                for(int j=0;j<N;j++) {
-                    if(arrList[i].get(j) != '.' && !visited[i][j]) {
-                        cnt = 1;
-                        dfs(i, j, arrList[i].get(j));
+            visited = new boolean[N][M];
+            boolean flag = true;
 
+            for(int i=0;i<N;i++) {
+                for(int j=0;j<M;j++) {
+                    if(arr[i][j] != '.' && !visited[i][j]) {
+                        bfs(i, j);
                     }
 
+                    if(list.size() >= 4) {
+                        flag = false;
+                        for(Puyo p : list) {
+                            arr[p.x][p.y] = '.';
+                        }
+                    }
+
+                    list.clear();
                 }
             }
+            remove();
 
-            if(remove()) {
+            if(!flag) {
                 count++;
             }else {
                 break;
@@ -65,58 +71,54 @@ public class Main_11559 {
 
     }
 
-    static void dfs(int x, int y, char ch) {
+    static void bfs(int x, int y) {
+
+        Queue<Puyo> q = new LinkedList<>();
 
         visited[x][y] = true;
+        char ch = arr[x][y];
+        q.offer(new Puyo(x,y));
 
-        for(int i=0;i<4;i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
+        list.add(new Puyo(x,y));
 
-            if(nx < 0 || nx >= M || ny < 0 || ny >= N || arrList[nx].get(ny) != ch) {
-                continue;
+        while(!q.isEmpty()) {
+            Puyo py = q.poll();
+
+            for(int i=0;i<4;i++) {
+                int nx = py.x + dx[i];
+                int ny = py.y + dy[i];
+
+                if(nx < 0 || nx >= N || ny < 0 || ny >= M) {
+                    continue;
+                }
+
+                if(!visited[nx][ny] && arr[nx][ny] == ch) {
+                    visited[nx][ny] = true;
+                    list.add(new Puyo(nx, ny));
+                    q.offer(new Puyo(nx, ny));
+                }
             }
-
-            if(!visited[nx][ny] && arrList[nx].get(ny) == ch) {
-                cnt++;
-                dfs(nx, ny, ch);
-            }
-        }
-
-        System.out.println(x + " " + y + " " + ch + " " + cnt);
-        if(cnt >= 4) {
-            //return true;
-            arrList[x].set(y, '*');
         }
 
 
     }
 
-    static boolean remove() {
-
-        boolean modified = false;
+    static void remove() {
 
         for(int i=0;i<M;i++) {
-            arrList[i].removeIf(ch -> ch.equals('*'));
-            if(arrList[i].size() != N) {
-                modified = true;
-                int size = N - arrList[i].size();
-                for(int j=0;j<size;j++) {
-                    arrList[i].add('.');
+            for(int j=N-1;j>0;j--) {
+
+                if(arr[j][i] == '.') {
+                    for(int z=j-1;z>=0;z--) {
+                        if(arr[z][i] != '.') {
+                            arr[j][i] = arr[z][i];
+                            arr[z][i] = '.';
+                            break;
+                        }
+                    }
                 }
             }
         }
-
-        for(int i=0;i<M;i++) {
-            for(int j=0;j<N;j++) {
-                System.out.print(arrList[i].get(j));
-            }
-            System.out.println();
-        }
-
-        System.out.println();
-
-        return modified;
     }
 
 }
