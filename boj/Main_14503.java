@@ -5,22 +5,11 @@ import java.io.*;
 
 public class Main_14503 {
 
-    static class Space {
-        int x, y, d;
-
-        public Space(int x, int y, int d) {
-            this.x = x;
-            this.y = y;
-            this.d = d;
-        }
-    }
-
     static int N,M;
     static int[][] map;
     static boolean[][] visited;
     static int[] dx = {-1,0,1,0};
     static int[] dy = {0,1,0,-1};
-    static boolean check = false;
     static int count = 0;
 
     public static void main(String[] args) throws IOException {
