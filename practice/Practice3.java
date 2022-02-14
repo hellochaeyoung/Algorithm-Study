@@ -7,53 +7,39 @@ import java.util.Map;
 
 public class Practice3 {
 
-    static class Cloth {
-        String c;
-        int division;
-
-        public Cloth(String c, int division) {
-            this.c = c;
-            this.division = division;
-        }
-    }
-
     public static void main(String[] args) {
 
         //String[] color = {"RG", "WR", "BW", "GG"};
-        String[] color = {"RG", "WR", "BW", "GG"};
-        int[] prices = {5000, 6000};
+        //String[] color = {"RG", "WR", "BW", "GG"};
+        String[] color = {"BW", "RY", "BY"};
+        //int[] prices = {5000, 6000};
+        //int[] prices = {2000, 6000};
+        int[] prices = {9000, 10000};
 
-        Map<String, Integer> map = new HashMap<>();
-
-        List<Cloth> top = new ArrayList<>();
-        List<Cloth> bottom = new ArrayList<>();
+        List<String> top = new ArrayList<>();
+        List<String> bottom = new ArrayList<>();
 
         for(String key : color) {
             String s1 = key.split("")[0];
             String s2 = key.split("")[1];
 
-            top.add(new Cloth(s1, 0));
-            bottom.add(new Cloth(s2, 1));
-
-            map.put(s1, map.getOrDefault(s1, 0) + 1);
-            map.put(s2, map.getOrDefault(s2, 0) + 1);
+            top.add(s1);
+            bottom.add(s2);
         }
+
         int sameCount = 0;
         int differCount = 0;
 
-        for(Cloth c : top) {
-            
-        }
-
-
-        for(int value : map.values()) {
-            if(value % 2 == 0) {
+        for(String s : top) {
+            if(bottom.contains(s)) {
                 sameCount++;
             }else {
-                sameCount += (value / 2);
                 differCount++;
             }
+            bottom.remove(s);
         }
+
+        differCount += bottom.size();
 
         int sum1 = sameCount * prices[0] + (differCount / 2) * prices[1];
         int sum2 = (sameCount + differCount) * prices[0];
