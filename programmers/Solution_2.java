@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Solutions_2 {
+public class Solution_2 {
 
     public int[] solution(int[] lottos, int[] win_nums) {
         int[] answer = new int[2];
