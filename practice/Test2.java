@@ -32,7 +32,7 @@ public class Test2 {
         return d;
     }
 
-    static void bfs(int x, int y, int d) {
+    static void dfs(int x, int y, int d) {
 
         if(d == 4) {
             d = 0;
@@ -84,10 +84,10 @@ public class Test2 {
             start = 1;
         }
 
-        bfs(0,0,start);
-        bfs(0, n-1, ++start);
-        bfs(n-1, n-1, ++start);
-        bfs(n-1, 0, ++start);
+        dfs(0,0,start);
+        dfs(0, n-1, ++start);
+        dfs(n-1, n-1, ++start);
+        dfs(n-1, 0, ++start);
 
         return map;
     }
