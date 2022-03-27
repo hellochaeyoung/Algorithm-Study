@@ -67,6 +67,7 @@ public class Line_5 {
                 }else {
                     temp[depth] = arr[i+1];
                 }
+
                 dfs(start+2, depth+1);
 
                 visited[i] = false;

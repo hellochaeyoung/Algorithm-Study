@@ -16,7 +16,6 @@ public class Line_3 {
         System.out.println(solution(num_teams, remote, office, employees));
     }
     public static List<Integer> solution(int num_teams, String[] remote_tasks, String[] office_tasks, String[] employees) {
-        //int[] answer = {};
 
         boolean[] checkTeam = new boolean[num_teams];
 
