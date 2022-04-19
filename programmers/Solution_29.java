@@ -25,7 +25,7 @@ public class Solution_29 {
     static int count = 0;
 
     public static void main(String[] args) {
-        
+
         int n = 2;
         String[] data = {"M~C<2", "C~M>1"};
 
