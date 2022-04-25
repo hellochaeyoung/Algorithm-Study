@@ -4,8 +4,6 @@ import java.util.*;
 
 public class Solution_35 {
 
-    static PriorityQueue<Integer> queue;
-
     public static void main(String[] args) {
 
         int n = 8;
@@ -16,39 +14,46 @@ public class Solution_35 {
     }
 
     public static String solution(int n, int k, String[] cmd) {
-        String answer = "";
 
-        queue = new PriorityQueue<>();
-        List<Integer> list = new LinkedList<>();
-        Stack<int[]> stack = new Stack<>();
+        int[] pre = new int[n];
+        int[] next = new int[n];
 
         for(int i=0;i<n;i++) {
-            list.add(i);
+            pre[i] = i-1;
+            next[i] = i+1;
         }
+        next[n-1] = -1; /////////////////////
+
+        Stack<int[]> stack = new Stack<>();
 
         for(String c : cmd) {
             if(c.equals("C")) {
-                int size = list.size(); // 삭제하기 전 길이
-                int num = list.remove(k);
-                stack.push(new int[]{k, num});
+                stack.push(new int[]{pre[k], k, next[k]});
 
-                if(k == size - 1) {
-                    k = list.size() - 1; // 삭제 후 길이
-                }
+                if(pre[k] != -1) next[pre[k]] = next[k];
+                if(next[k] != -1) pre[next[k]] = pre[k];
+
+                if(next[k] != -1) k = next[k];
+                else k = pre[k];
+
             }else if(c.equals("Z")) {
-                int[] removed = stack.pop();
-                if(removed[0] <= k) {
-                    k += 1;
-                }
-                list.add(removed[0], removed[1]);
+                int[] arr = stack.pop();
+
+                if(arr[0] != -1) next[arr[0]] = arr[1];
+                if(arr[2] != -1) pre[arr[2]] = arr[1];
+
             }else {
                 String order = c.split(" ")[0];
                 int move = Integer.parseInt(c.split(" ")[1]);
 
                 if(order.equals("U")) {
-                    k -= move;
+                    while(move-- > 0) {
+                        k = pre[k];
+                    }
                 }else if(order.equals("D")) {
-                    k += move;
+                    while(move-- > 0) {
+                        k = next[k];
+                    }
                 }
             }
         }
@@ -59,7 +64,7 @@ public class Solution_35 {
         }
 
         for(int[] arr : stack) {
-            int idx = arr[0];
+            int idx = arr[1];
             sb.setCharAt(idx, 'X');
         }
 
