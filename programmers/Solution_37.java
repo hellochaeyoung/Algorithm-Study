@@ -8,7 +8,7 @@ public class Solution_37 {
 
     public static void main(String[] args) {
 
-        String p = "()))((()";
+        String p = "))(((()))()(())))(((";
 
         System.out.println(solution(p));
 
@@ -30,11 +30,11 @@ public class Solution_37 {
         }
 
         String u,v;
-        if(st.length() == 2) {
+        String result = find(st);
+        if(result.charAt(result.length() - 1) == ' ') {
             u = st;
             v = "";
         }else {
-            String result = find(st);
             u = result.split(" ")[0];
             v = result.split(" ")[1];
         }
@@ -44,11 +44,7 @@ public class Solution_37 {
         if(check(u)) {
             return u + make(v);
         }else {
-            sb.append("(");
-
-            sb.append(make(v));
-
-            sb.append(")");
+            sb.append("(").append(make(v)).append(")");
 
             //첫번째, 마지막 문자 제거
             u = u.substring(1);
@@ -64,6 +60,7 @@ public class Solution_37 {
         return sb.toString();
     }
 
+    // 올바른 괄호 문자열 체크
     static boolean check(String s) {
         Stack<Character> stack = new Stack<>();
 
@@ -89,6 +86,7 @@ public class Solution_37 {
         return stack.isEmpty();
     }
 
+    //균형있는 문자열 2개로 분리
     static String find(String s) {
 
         int[] cnt = new int[2];
