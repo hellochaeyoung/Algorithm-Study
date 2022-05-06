@@ -1,20 +1,17 @@
 package programmers;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class Solution_46 {
 
-    static boolean[][][] visited;
-
     // 하, 우, 상, 좌
     static int[] dx = {1,0,-1,0};
     static int[] dy = {0,1,0,-1};
 
-    static int price = Integer.MAX_VALUE;
-
     static int N,M;
-    static int[][] map;
+    static int[][][] map;
 
     public static void main(String[] args) {
 
@@ -28,21 +25,23 @@ public class Solution_46 {
 
         N = M = board.length;
 
-        visited = new boolean[N][M][4];
+        map = new int[N][M][4];
+        for(int i=0;i<N;i++) {
+            for(int j=0;j<M;j++) {
+                Arrays.fill(map[i][j], Integer.MAX_VALUE);
+            }
+        }
 
-        map = board;
+        bfs(board, 0, 0);
 
-        bfs(board, 0, 0, N, M);
-        //dfs(0,0,-1,N,M);
-
-        return price;
+        return Arrays.stream(map[N-1][M-1]).min().getAsInt();
     }
 
-    static void bfs(int[][] board, int x, int y, int N, int M) {
+    static void bfs(int[][] board, int x, int y) {
 
         Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[]{x,y,0,0,0});
-        visited[x][y][0] = true;
+        queue.add(new int[]{x,y,0,0});
+        queue.add(new int[]{x,y,0,1});
 
         while(!queue.isEmpty()) {
             int[] arr = queue.poll();
@@ -50,40 +49,14 @@ public class Solution_46 {
             for(int i=0;i<4;i++) {
                 int nx = arr[0] + dx[i];
                 int ny = arr[1] + dy[i];
-                int dir = arr[2];
-                int street = arr[3];
-                int corner = arr[4];
+                int cost = arr[2] + (arr[3] == i ? 100 : 600);
 
-                if(nx < 0 || nx >= N || ny < 0 || ny >= M || board[nx][ny] == 1) {
+                if(nx < 0 || nx >= N || ny < 0 || ny >= M || board[nx][ny] == 1 || map[nx][ny][i] <= cost) {
                     continue;
                 }
 
-
-
-                if(!visited[nx][ny][i]) {
-
-                    int tmp = corner;
-                    if(dir != -1) {
-                        int gap = Math.abs(i - dir);
-                        if(gap == 1 || gap == 3)  {
-                            tmp = corner+1;
-                        }
-                    }
-
-                    if(nx == N-1 && ny == M-1) {
-                        int cost = (street + 1) * 100 + tmp * 500;
-                        //System.out.println(street+1 + " " + corner);
-                        //System.out.println(price + " " + cost);
-                        price = Math.min(price, cost);
-
-                        break;
-                    }
-
-                    visited[nx][ny] = true;
-
-                    queue.add(new int[] {nx, ny, i, street+1, tmp});
-                }
-
+                map[nx][ny][i] = cost;
+                queue.add(new int[] {nx, ny, cost, i});
             }
         }
 
