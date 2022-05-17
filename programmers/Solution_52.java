@@ -13,7 +13,7 @@ public class Solution_52 {
     public static void main(String[] args) {
         String[][] relation = {{"100","ryan","music","2"},{"200","apeach","math","2"},{"300","tube","computer","3"},{"400","con","computer","4"},{"500","muzi","music","3"},{"600","apeach","music","2"}};
 
-        solution(relation);
+        System.out.println(solution(relation));
     }
 
     public static int solution(String[][] relation) {
@@ -28,39 +28,28 @@ public class Solution_52 {
             dfs(i+1, 0, 0);
         }
 
-        System.out.println(list.toString());
-
         List<String> noDuplicatedList = find(relation);
-        System.out.println(noDuplicatedList.toString());
-/*
-        Iterator<String> iterator = noDuplicatedList.iterator();
-        for(int i=0;i< isPrimary.length;i++) {
-            if(isPrimary[i]) {
-                while(iterator.hasNext()) {
-                    String st = iterator.next();
-                    if(st.length() != 1 && st.contains(String.valueOf(i))) {
-                        iterator.remove();
-                    }
-                }
-            }
-        }
-
- */
 
         List<String> finalList = new ArrayList<>(noDuplicatedList);
         for(int i=0;i<noDuplicatedList.size()-1;i++) {
             String st = noDuplicatedList.get(i);
             for(int j=i+1;j<noDuplicatedList.size();j++) {
                 String next = noDuplicatedList.get(j);
-                if(next.startsWith(st)) finalList.remove(next);
+                String[] temp = st.split("");
+                boolean check = true;
+                for(String s : temp) {
+                    if(!next.contains(s)) {
+                        check = false;
+                        break;
+                    }
+                }
+                if(check) finalList.remove(next);
             }
         }
 
-        System.out.println(finalList.toString());
+        //System.out.println(finalList.toString());
 
-
-
-        return answer;
+        return finalList.size();
     }
 
     static void dfs(int depth, int count, int start) {
