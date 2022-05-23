@@ -3,21 +3,20 @@ package boj;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main_2891 {
-
-    static int N;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        N = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());
         int S = Integer.parseInt(st.nextToken());
         int R = Integer.parseInt(st.nextToken());
 
-        int answer = S;
+        int answer = 0;
 
         int[] destroy = new int[S];
         st = new StringTokenizer(br.readLine());
@@ -32,16 +31,22 @@ public class Main_2891 {
             oneMoreTeams[idx] = true;
         }
 
-        for (int t : destroy) {
+        Arrays.sort(destroy);
+
+        for (int i=0;i<S;i++) {
+            int t = destroy[i];
             if(oneMoreTeams[t]) {
                 oneMoreTeams[t] = false;
-                answer--;
-            } else if (t != 1 && oneMoreTeams[t - 1]) {
-                oneMoreTeams[t - 1] = false;
-                answer--;
-            } else if (t != N && oneMoreTeams[t + 1]) {
-                oneMoreTeams[t + 1] = false;
-                answer--;
+            }else {
+                if (t > 1 && oneMoreTeams[t - 1]) {
+                    oneMoreTeams[t - 1] = false;
+                }else {
+                    if (t != N && oneMoreTeams[t + 1]) {
+                        oneMoreTeams[t + 1] = false;
+                    }else {
+                        answer++;
+                    }
+                }
             }
         }
 
