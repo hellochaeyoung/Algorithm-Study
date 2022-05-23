@@ -16,38 +16,56 @@ public class Main_2891 {
         int S = Integer.parseInt(st.nextToken());
         int R = Integer.parseInt(st.nextToken());
 
+        int[] k = new int[12];
+        Arrays.fill(k, 1);
+
         int answer = 0;
 
-        int[] destroy = new int[S];
         st = new StringTokenizer(br.readLine());
         for(int i=0;i<S;i++) {
-            destroy[i] = Integer.parseInt(st.nextToken());
+            int idx = Integer.parseInt(st.nextToken());
+            k[idx]--;
         }
 
-        boolean[] oneMoreTeams = new boolean[N+1];
         st = new StringTokenizer(br.readLine());
         for(int i=0;i<R;i++) {
             int idx = Integer.parseInt(st.nextToken());
-            oneMoreTeams[idx] = true;
+            k[idx]++;
         }
 
-        Arrays.sort(destroy);
+        for (int i=1;i<=N;i++) {
+            if(k[i] == 2) {
+                if(i == 1) {
+                    if(k[i+1] == 0) {
+                        k[i+1] = 1;
+                        k[i] = 1;
+                    }
+                }
 
-        for (int i=0;i<S;i++) {
-            int t = destroy[i];
-            if(oneMoreTeams[t]) {
-                oneMoreTeams[t] = false;
-            }else {
-                if (t > 1 && oneMoreTeams[t - 1]) {
-                    oneMoreTeams[t - 1] = false;
-                }else {
-                    if (t != N && oneMoreTeams[t + 1]) {
-                        oneMoreTeams[t + 1] = false;
-                    }else {
-                        answer++;
+                else if(i==N) {
+                    if(k[i-1] == 0) {
+                        k[i-1] = 1;
+                        k[i] = 1;
+                    }
+                }
+
+                else {
+                    if((k[i-1] == 0 && k[i+1] == 0) || (k[i-1] == 0 && k[i+1] >= 1)) {
+                        k[i-1] = 1;
+                        k[i] = 1;
+                    }
+
+                    else if(k[i-1] >= 1 && k[i+1] == 0) {
+                        k[i+1] = 1;
+                        k[i] = 1;
                     }
                 }
             }
+
+        }
+
+        for(int i=1;i<=N;i++) {
+            if(k[i] == 0) answer++;
         }
 
         System.out.println(answer);
